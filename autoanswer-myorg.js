@@ -31,6 +31,7 @@ or implied.
  
 import xapi from 'xapi';
 
+xapi.Config.HttpClient.Mode.set('On');
 xapi.Event.IncomingCallIndication.on(processIncomingCall);
 
 function processIncomingCall(event) {
