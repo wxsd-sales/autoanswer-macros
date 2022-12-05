@@ -17,14 +17,15 @@ or implied.
  *                    	wimills@cisco.com
  *                    	Cisco Systems
  * 
- * Version: 1-0-1
+ * Version: 1-0-0
  * Released: 12/05/22
  * 
  * This is a Webex Device macro which provides additional controls
- * for auto answering a call
+ * for auto answering a call. The particular version will check if the
+ * caller is a Room or Person in your own org based off a phonebook lookup.
  * 
  * Full Readme and source code availabel on Github:
- * https://github.com/wxsd-sales/autoanswer-macro/
+ * https://github.com/wxsd-sales/autoanswer-macros/
  * 
  ********************************************************/
  
@@ -33,7 +34,7 @@ import xapi from 'xapi';
 xapi.Event.IncomingCallIndication.on(processIncomingCall);
 
 function processIncomingCall(event) {
-  //console.log(event)
+  console.log(event)
   console.log('Incoming Call detected')
   console.log('Display Name: ' + event.DisplayNameValue);
   console.log('Remote URI: ' + event.RemoteURI);
