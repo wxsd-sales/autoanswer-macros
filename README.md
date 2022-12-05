@@ -1,5 +1,11 @@
-# Autoanswer Macro
-This is a Webex Device macro which provides additional controls for auto answering a call
+# Autoanswer Macros
+These are a series of Webex Device macros which provides additional controls for auto answering a call based off your use case:
+
+* Room Membership
+Use a Webex Bot token and the Webex Messaging Membership API. The macro can check if the calling party is a member of a specific Room or Rooms will and then will answer if they are a member of any.
+
+* A member of your Webex Org
+The macro can leverage the Phonebook search command to verify if the calling party is a person or room calling from withing your Webex Org and answer for them. Blocking anyone from outside your Webex Org from having the call answer for them.
 
 ## Requirements
 
