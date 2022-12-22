@@ -17,61 +17,79 @@ or implied.
  *                    	wimills@cisco.com
  *                    	Cisco Systems
  * 
- * Version: 1-0-0
- * Released: 12/05/22
+ * Version: 1-0-1
+ * Released: 12/22/22
  * 
  * This is a Webex Device macro which provides additional controls
- * for auto answering a call. The particular version will check if the
- * caller is a Room or Person in your own org based off a phonebook lookup.
+ * for auto answering a call. The particular version will let you auto
+ * answer if either host or cohost of a meeting is in your Org and also
+ * For direct calls and adhoc meetings also we can determine auto
+ * answer when memebers from your org are calling.
+ * 
+ * If no incoming calling include persons or devices from your Org, 
+ * the macro will not answer.
+ * 
  * 
  * Full Readme and source code availabel on Github:
  * https://github.com/wxsd-sales/autoanswer-macros/
  * 
  ********************************************************/
- 
+
 import xapi from 'xapi';
 
-xapi.Config.HttpClient.Mode.set('On');
-xapi.Event.IncomingCallIndication.on(processIncomingCall);
-
-function processIncomingCall(event) {
-  console.log(event)
-  console.log('Incoming Call detected')
-  console.log('Display Name: ' + event.DisplayNameValue);
-  console.log('Remote URI: ' + event.RemoteURI);
-
-  if (!event.RemoteURI.startsWith("spark:")) {
-    console.log(`Remote URI doesn't contain a spark prefrix, ignoring call`);
-    return
-  }
-
-  // Search phonebook for the incoming call display name
-  xapi.Command.Phonebook.Search({
-    PhonebookType: 'Corporate',
-    SearchString: event.DisplayNameValue
-  })
-    .then(r => {
-      // Only check results if we got any contacts back
-      if (r.hasOwnProperty('Contact')) {
-        console.log('Number of search results found: ' + r.Contact.length)
-        const remoteURI = normaliseRemoteURI(event.RemoteURI)
-        // Compare the RemoteURI with the search results
-        for (let i = 0; i < r.Contact.length; i++) {
-          if (r.Contact[i].ContactId == remoteURI) {
-            console.log('RemoteURI match found, answering call');
-            xapi.Command.Call.Accept();
-            return;
-          }
-        }
-        console.log('RemoteURI had no match, ingoring call')
-      } else {
-        console.log('No results found, ingoring call')
-      }
-    })
+const config = {
+  meetings: {
+    host: true,       //Answer for same org meeting hosts
+    cohost: false     //Answer for same org meeting cohosts
+  },
+  adhocMeeting: true, //Answer for same org meeting guest
+  direct: true        //Answer for same org direct calls
 }
 
-function normaliseRemoteURI(number) {
-  var regex = /^(sip:|h323:|spark:|h320:|webex:|locus:)/gi;
-  number = number.replace(regex, '');
-  return number;
+xapi.Event.Conference.ParticipantList.NewList.on(e => {
+  xapi.Command.Conference.ParticipantList.Search({ CallId: e.CallId })
+    .then(plist => processParticipantList(e.CallId, plist))
+})
+
+async function processParticipantList(callId, plist) {
+  if(!plist.Participant)return;
+
+  const callStatus = await xapi.Status.Call[callId].get()
+  const conferenceStatus = await xapi.Status.Conference.Call[callId].get()
+
+  const self = plist.Participant.filter(p => p.ParticipantId == plist.ParticipantSelf).pop();
+  console.log(self.Status)
+  const host = plist.Participant.filter(p => (p.IsHost == 'True' && p.OrgId == self.OrgId)).pop();
+  const cohosts = plist.Participant.filter(p => p.CoHost == 'True')
+  const guests = plist.Participant.filter(p => 
+    (p.OrgId == self.OrgId && p.id != self.id && p.IsHost == 'False' && p.CoHost == 'False'))
+
+  switch (self.Status){
+    case 'pending-added-guest':
+      console.log('This is a meeting')
+      if(host && config.meetings.host){
+        answer(callId, 'Answering for Host')
+      } else if (cohosts.length > 0 && config.meetings.cohost) {
+        answer(callId, 'Answering for Cohosts')
+      } else if (guests.length > 0 && config.adhocMeeting){
+        answer(callId, 'Answering for Guests')
+      } else {
+        console.log('No criteria met, ignoring call')
+      }
+      break;
+    case 'alerting':
+      console.log('This is a direct call')
+      if(guests.length > 0 && config.direct){
+        answer(callId, 'Answering for Guest')
+      } else {
+        console.log('No criteria met, ignoring call')
+      }
+      break;
+  }
+
+}
+
+function answer(callId, message){
+  console.log(message)
+  xapi.Command.Call.Accept({ CallId: callId })
 }
