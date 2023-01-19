@@ -13,7 +13,7 @@ The macro can leverage the Phonebook search command to verify if the calling par
 
 1. RoomOS/CE 9.6.x or above Webex Device.
 2. Web admin access to the device to uplaod the macro.
-3. Network connectivity for your Webex Device to make HTTP POSTs directly with your telemetry server.
+3. For the Room Membership approach, a Webex Bot access token is required which is a member of a Webex Space
 
 ## Setup
 
