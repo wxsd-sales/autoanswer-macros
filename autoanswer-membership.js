@@ -24,7 +24,7 @@ or implied.
  * for auto answering a call. The particular version will answer a call
  * from a person if they are present in specified spaces a Bot is also in.
  * 
- * Full Readme and source code availabel on Github:
+ * Full Readme and source code available on Github:
  * https://github.com/wxsd-sales/autoanswer-macros/
  * 
  ********************************************************/
