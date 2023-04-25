@@ -1,16 +1,4 @@
 /********************************************************
-Copyright (c) 2022 Cisco and/or its affiliates.
-This software is licensed to you under the terms of the Cisco Sample
-Code License, Version 1.1 (the "License"). You may obtain a copy of the
-License at
-               https://developer.cisco.com/docs/licenses
-All use of the material herein must be in accordance with the terms of
-the License. All rights not expressly granted by the License are
-reserved. Unless required by applicable law or agreed to separately in
-writing, software distributed under the License is distributed on an "AS
-IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
-or implied.
-*********************************************************
  * 
  * Macro Author:      	William Mills
  *                    	Technical Solutions Specialist 
@@ -24,7 +12,7 @@ or implied.
  * for auto answering a call. The particular version will answer a call
  * from a person if they are present in specified spaces a Bot is also in.
  * 
- * Full Readme and source code available on Github:
+ * Full Readme, source code and license agreement available on Github:
  * https://github.com/wxsd-sales/autoanswer-macros/
  * 
  ********************************************************/
