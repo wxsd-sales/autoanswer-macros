@@ -16,7 +16,7 @@ When the device receives a call, we also get access to the conference participan
 
 ### Local Device Favorites
 
-Webex Devices let you tag contacts from the corporate phonebook or recents as favorites the devices local phonebook. We are able to lookup the incoming caller on this local phonebook and auto answer if they are present.
+Webex Devices let you save contacts from the corporate phonebook or recents as favorites on the devices local phonebook. We are able to lookup the incoming caller on this local phonebook and auto answer if they are present.
 
 ## Setup
 
